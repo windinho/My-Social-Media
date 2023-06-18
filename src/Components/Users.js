@@ -50,6 +50,7 @@ const Users = () => {
           Add User
         </button>
       </div>
+      <p className="small">Here is a list of users. Click to view details</p>
       <div className="list-group">
         {users.length
           ? users.map((user) => (

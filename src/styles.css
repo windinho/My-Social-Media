@@ -9,3 +9,8 @@
 p:last-child {
   margin-bottom: 0;
 }
+
+.post:hover .notes-icon {
+  transform: rotate(-20deg);
+  transition: .5s ease;
+}

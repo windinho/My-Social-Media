@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, Toast, ToastContainer } from "react-bootstrap";
 
 const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
+  const [toastMsg, setToastMsg] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     gender: "",
-    status: ""
+    status: "",
   });
 
   const handleChange = (e) => {
@@ -17,24 +18,24 @@ const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!e.target.checkValidity()) {
-      e.target.reportValidity();
-      return;
-    }
-
     try {
       const response = await fetch("https://gorest.co.in/public/v2/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization:
-            "Bearer 0d457d422346f26e1b96e76de5adc10418b499f408d02f16ec261c2c4aac0bc5"
+            "Bearer 0d457d422346f26e1b96e76de5adc10418b499f408d02f16ec261c2c4aac0bc5",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
-      data.id && handleRefreshUsers({ ...data, new: true });
+      if (data.id) {
+        handleRefreshUsers({ ...data, new: true });
+        setToastMsg("success");
+      } else {
+        setToastMsg(data[0].field + " " + data[0].message);
+      }
       handleCloseModal();
     } catch (error) {
       console.log("Error adding user:", error);
@@ -133,6 +134,21 @@ const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
           </Modal.Footer>
         </Form>
       </Modal>
+      <ToastContainer className="p-3" position="top-end" style={{ zIndex: 1 }}>
+        <Toast
+          onClose={() => setToastMsg(false)}
+          show={toastMsg}
+          className={`text-white ${
+            toastMsg === "success" ? "bg-success" : "bg-danger"
+          }`}
+          delay={5000}
+          autohide
+        >
+          <Toast.Body className="text-capitalize">
+            {toastMsg === "success" ? "User added successfully" : toastMsg}
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
     </>
   );
 };

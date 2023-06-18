@@ -22,8 +22,8 @@ const PostList = () => {
           headers: {
             "Content-Type": "application/json",
             Authorization:
-              "Bearer 0d457d422346f26e1b96e76de5adc10418b499f408d02f16ec261c2c4aac0bc5"
-          }
+              "Bearer 0d457d422346f26e1b96e76de5adc10418b499f408d02f16ec261c2c4aac0bc5",
+          },
         }
       );
       const postsData = await postsResponse.json();
@@ -39,7 +39,7 @@ const PostList = () => {
   }, []);
 
   return (
-    <div className="container col-lg-4 py-4">
+    <div className="container col-lg-5 py-4">
       <div className="card mb-3">
         <div className="card-body">
           <AddPost handleRefreshPosts={handleRefreshPosts} user_id={id} />

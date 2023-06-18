@@ -58,7 +58,10 @@ const Users = () => {
                 key={user.id}
                 to={`user-details/${user.id}`}
               >
-                {user.name}
+                <span>{user.name}</span>
+                <span title={user.status} className={`badge p-1 ms-2 text-bg-${user.status === 'active' ?'success':'danger'}`}>
+                  <span class="visually-hidden">New alerts</span>
+                </span>
                 {user.new && (
                   <span className="badge text-bg-warning ms-2">New</span>
                 )}

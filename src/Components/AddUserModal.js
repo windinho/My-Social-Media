@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal, Form, Toast, ToastContainer } from "react-bootstrap";
 
 const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
@@ -33,10 +33,11 @@ const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
       if (data.id) {
         handleRefreshUsers({ ...data, new: true });
         setToastMsg("success");
+        handleCloseModal();
+        setFormData({ name: "", email: "", gender: "", status: "" });
       } else {
         setToastMsg(data[0].field + " " + data[0].message);
       }
-      handleCloseModal();
     } catch (error) {
       console.log("Error adding user:", error);
     }
@@ -134,7 +135,11 @@ const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
           </Modal.Footer>
         </Form>
       </Modal>
-      <ToastContainer className="p-3" position="top-end" style={{ zIndex: 1 }}>
+      <ToastContainer
+        className="p-3"
+        position="top-end"
+        style={{ zIndex: 1056 }}
+      >
         <Toast
           onClose={() => setToastMsg(false)}
           show={toastMsg}

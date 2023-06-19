@@ -51,7 +51,10 @@ const PostList = () => {
         ? posts.map((post) => (
             <div className="card mb-3 post" key={post.id}>
               <div className="card-body d-flex align-items-start">
-                <NotesIcon width="20" className="me-2 notes-icon" />
+                <NotesIcon
+                  width="20"
+                  className="me-2 notes-icon flex-shrink-0"
+                />
                 <div>
                   <h6>{post.title}</h6>
                   <p className="small">{post.body}</p>

@@ -19,8 +19,8 @@ const CommentsList = ({ post_id }) => {
           headers: {
             "Content-Type": "application/json",
             Authorization:
-              "Bearer 0d457d422346f26e1b96e76de5adc10418b499f408d02f16ec261c2c4aac0bc5"
-          }
+              "Bearer 0d457d422346f26e1b96e76de5adc10418b499f408d02f16ec261c2c4aac0bc5",
+          },
         }
       );
       const commentsData = await commentsResponse.json();
@@ -43,8 +43,8 @@ const CommentsList = ({ post_id }) => {
       />
 
       {comments.map((comment) => (
-        <div className="d-flex align-items-center mt-2" key={comment.id}>
-          <UserIcon width="24" className="me-2" />
+        <div className="d-flex align-items-start mt-2" key={comment.id}>
+          <UserIcon width="24" className="me-2 flex-shrink-0" />
           <div className="card border-0 gray-bg">
             <div className="card-body p-2 small">{comment.body}</div>
           </div>

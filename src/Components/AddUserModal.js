@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal, Form, Toast, ToastContainer } from "react-bootstrap";
+import { useAddUserMutation } from "../redux/api";
 
-const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
+const AddUserModal = ({ showModal, handleCloseModal }) => {
   const [toastMsg, setToastMsg] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -9,6 +10,7 @@ const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
     gender: "",
     status: "",
   });
+  const [addUser, result] = useAddUserMutation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,31 +19,19 @@ const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch("https://gorest.co.in/public/v2/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Bearer 0d457d422346f26e1b96e76de5adc10418b499f408d02f16ec261c2c4aac0bc5",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-      if (data.id) {
-        handleRefreshUsers({ ...data, new: true });
-        setToastMsg("success");
-        handleCloseModal();
-        setFormData({ name: "", email: "", gender: "", status: "" });
-      } else {
-        setToastMsg(data[0].field + " " + data[0].message);
-      }
-    } catch (error) {
-      console.log("Error adding user:", error);
-    }
+    addUser({ formData });
   };
+
+  useEffect(() => {
+    if (result.status === "fulfilled") {
+      setToastMsg("success");
+      handleCloseModal();
+      setFormData({ name: "", email: "", gender: "", status: "" });
+    } else if (result.status === "rejected") {
+      const { data } = result.error;
+      setToastMsg(data[0].field + " " + data[0].message);
+    }
+  }, [result]);
 
   return (
     <>
@@ -78,54 +68,38 @@ const AddUserModal = ({ showModal, handleRefreshUsers, handleCloseModal }) => {
 
             <Form.Label>Gender</Form.Label>
             <Form.Group className="mb-2">
-              <Form.Check
-                inline
-                type="radio"
-                id="Male"
-                label="Male"
-                name="gender"
-                value="male"
-                checked={formData.gender === "male"}
-                onChange={handleChange}
-                required
-              />
-              <Form.Check
-                inline
-                type="radio"
-                id="Female"
-                label="Female"
-                name="gender"
-                value="female"
-                checked={formData.gender === "female"}
-                onChange={handleChange}
-                required
-              />
+              {["male", "female"].map((gender, i) => (
+                <Form.Check
+                  inline
+                  key={i}
+                  type="radio"
+                  id={gender}
+                  label={gender[0].toUpperCase() + gender.slice(1)}
+                  name="gender"
+                  value={gender}
+                  checked={formData.gender === gender}
+                  onChange={handleChange}
+                  required
+                />
+              ))}
             </Form.Group>
 
             <Form.Label>Status</Form.Label>
             <Form.Group controlId="formEmail" className="mb-2">
-              <Form.Check
-                inline
-                type="radio"
-                id="Active"
-                label="Active"
-                name="status"
-                value="active"
-                checked={formData.status === "active"}
-                onChange={handleChange}
-                required
-              />
-              <Form.Check
-                inline
-                type="radio"
-                id="Inactive"
-                label="Inactive"
-                name="status"
-                value="inactive"
-                checked={formData.status === "inactive"}
-                onChange={handleChange}
-                required
-              />
+              {["active", "inactive"].map((status, i) => (
+                <Form.Check
+                  inline
+                  key={i}
+                  type="radio"
+                  id={status}
+                  label={status[0].toUpperCase() + status.slice(1)}
+                  name="status"
+                  value={status}
+                  checked={formData.status === status}
+                  onChange={handleChange}
+                  required
+                />
+              ))}
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>

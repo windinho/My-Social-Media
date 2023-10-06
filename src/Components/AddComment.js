@@ -1,40 +1,45 @@
 import React, { useRef, useState } from "react";
+import { useAddCommentMutation } from "../redux/api";
 
-const AddComment = ({ post_id, handleRefreshComments }) => {
-  const [formData, setFormData] = useState(null);
+const AddComment = ({ post_id }) => {
+  const [comment, setComment] = useState(null);
   const inputRef = useRef(null);
+  const [addComment, result] = useAddCommentMutation();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    const { value } = e.target;
+    setComment(value);
   };
 
-  const addComment = async (e) => {
+  const handleAddComment = async (e) => {
     e.preventDefault();
     if (inputRef.current.value === "") return;
+    addComment({
+      post_id,
+      name: "user",
+      email: "user@gmail.com",
+      body: comment,
+    });
 
     try {
-      const response = await fetch(
+      /* const response = await fetch(
         `https://gorest.co.in/public/v2/posts/${post_id}/comments`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization:
-              "Bearer 0d457d422346f26e1b96e76de5adc10418b499f408d02f16ec261c2c4aac0bc5"
+              "Bearer 0d457d422346f26e1b96e76de5adc10418b499f408d02f16ec261c2c4aac0bc5",
           },
           body: JSON.stringify({
-            post: formData.comment,
             post_id,
             name: "user",
             email: "user@gmail.com",
-            body: formData.comment
-          })
-        }
-      );
+            body: comment,
+          }),
+        },
+      ); */
 
-      const addedComment = await response.json();
-      addedComment.id && handleRefreshComments(addedComment);
       inputRef.current.value = "";
     } catch (error) {
       console.log("Error adding post:", error);
@@ -42,7 +47,7 @@ const AddComment = ({ post_id, handleRefreshComments }) => {
   };
 
   return (
-    <form className="input-group" onSubmit={addComment}>
+    <form className="input-group" onSubmit={handleAddComment}>
       <input
         ref={inputRef}
         type="text"
@@ -53,7 +58,11 @@ const AddComment = ({ post_id, handleRefreshComments }) => {
       />
 
       {inputRef?.current?.value && (
-        <button className="btn btn-dark" type="button" onClick={addComment}>
+        <button
+          className="btn btn-dark"
+          type="button"
+          onClick={handleAddComment}
+        >
           Comment
         </button>
       )}

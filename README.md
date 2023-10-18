@@ -1,2 +1,2 @@
-# Users_Posts
+# My Social Media
 Created with CodeSandbox
